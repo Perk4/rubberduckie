@@ -18,12 +18,11 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Loader } from "@/components/loader";
 import { Empty } from "@/components/ui/empty";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useProModal } from "@/hooks/use-pro-modal";
+
 
 import { amountOptions, formSchema, resolutionOptions } from "./constants";
 
 const PhotoPage = () => {
-  const proModal = useProModal();
   const router = useRouter();
   const [photos, setPhotos] = useState<string[]>([]);
 
@@ -44,12 +43,12 @@ const PhotoPage = () => {
 
       const response = await axios.post('/api/image', values);
 
-      const urls = response.data.map((image: { url: string }) => image.url);
+      const urls = response.data;
 
       setPhotos(urls);
     } catch (error: any) {
       if (error?.response?.status === 403) {
-        proModal.onOpen();
+        toast.error("You've reached your monthly limit.");
       } else {
         toast.error("Something went wrong.");
       }
@@ -177,9 +176,11 @@ const PhotoPage = () => {
             <Card key={src} className="rounded-lg overflow-hidden">
               <div className="relative aspect-square">
                 <Image
-                  fill
                   alt="Generated"
                   src={src}
+                  layout="fill"
+
+                  
                 />
               </div>
               <CardFooter className="p-2">
